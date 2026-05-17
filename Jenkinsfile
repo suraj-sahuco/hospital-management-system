@@ -7,6 +7,7 @@ pipeline {
     }
 
     environment {
+
         APP_NAME = "hospital-management-system"
         IMAGE_NAME = "hms-app"
         CONTAINER_NAME = "hms-container"
@@ -31,6 +32,7 @@ pipeline {
     stages {
 
         stage('Checkout Code') {
+
             steps {
 
                 echo '======================================'
@@ -43,6 +45,7 @@ pipeline {
         }
 
         stage('Build Application') {
+
             steps {
 
                 echo '======================================'
@@ -54,6 +57,7 @@ pipeline {
         }
 
         stage('Run Unit Tests') {
+
             steps {
 
                 echo '======================================'
@@ -65,6 +69,7 @@ pipeline {
         }
 
         stage('Package Application') {
+
             steps {
 
                 echo '======================================'
@@ -76,6 +81,7 @@ pipeline {
         }
 
         stage('Verify Target Folder') {
+
             steps {
 
                 echo '======================================'
@@ -87,6 +93,7 @@ pipeline {
         }
 
         stage('Build Docker Image') {
+
             steps {
 
                 echo '======================================'
@@ -98,6 +105,7 @@ pipeline {
         }
 
         stage('Remove Old Container') {
+
             steps {
 
                 echo '======================================'
@@ -109,18 +117,8 @@ pipeline {
             }
         }
 
-        stage('Remove Old Docker Image') {
-            steps {
-
-                echo '======================================'
-                echo 'Removing old Docker image...'
-                echo '======================================'
-
-                sh "docker rmi ${IMAGE_NAME} || true"
-            }
-        }
-
         stage('Deploy Container') {
+
             steps {
 
                 echo '======================================'
@@ -143,6 +141,7 @@ pipeline {
         }
 
         stage('Verify Deployment') {
+
             steps {
 
                 echo '======================================'
@@ -154,6 +153,7 @@ pipeline {
         }
 
         stage('Container Logs') {
+
             steps {
 
                 echo '======================================'
@@ -163,7 +163,6 @@ pipeline {
                 sh "docker logs ${CONTAINER_NAME}"
             }
         }
-
     }
 
     post {
