@@ -16,17 +16,17 @@ pipeline {
         // DATABASE ENV VARIABLES
         // =========================
 
-        DB_URL = "jdbc:postgresql://YOUR_SUPABASE_HOST:6543/postgres"
-        DB_USER = "YOUR_DB_USER"
-        DB_PWD = "YOUR_DB_PASSWORD"
+        DB_URL = "jdbc:postgresql://aws-1-ap-south-1.pooler.supabase.com:6543/postgres"
+        DB_USER = "postgres.bjioslmcldvqtmkaswmt"
+        DB_PWD = "Suraj@123Pastgres"
 
         // =========================
         // REDIS ENV VARIABLES
         // =========================
 
-        REDIS_HOST = "YOUR_REDIS_HOST"
+        REDIS_HOST = "capable-bluegill-126086.upstash.io"
         REDIS_PORT = "6379"
-        REDIS_PASSWORD = "YOUR_REDIS_PASSWORD"
+        REDIS_PASSWORD = "gQAAAAAAAeyGAAIgcDIzNjQ2NjI2OTg3ODI0ZDQ1YTkyNDA1OTBjMzU3ZWI5Yw"
     }
 
     stages {
