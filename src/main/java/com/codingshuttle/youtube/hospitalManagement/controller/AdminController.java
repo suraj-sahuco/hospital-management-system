@@ -22,7 +22,7 @@ public class AdminController {
     private final DoctorService doctorService;
 
     // ✅ MANUAL CONSTRUCTOR (Lombok @RequiredArgsConstructor ka replacement)
-    // 👉 Ye constructor Spring ko batata hai ki dependencies kaise inject karni hain
+    // 👉 Ye constructor Spring ko shata hai ki dependencies kaise inject karni hain
     public AdminController(PatientService patientService, DoctorService doctorService) {
         this.patientService = patientService;
         this.doctorService = doctorService;

@@ -31,7 +31,7 @@ pipeline {
                 echo 'Building Spring Boot application...'
                 echo '======================================'
 
-                bat 'mvn clean compile'
+                sh 'mvn clean compile'
             }
         }
 
@@ -41,7 +41,7 @@ pipeline {
                 echo 'Running test cases...'
                 echo '======================================'
 
-                bat 'mvn test'
+                sh 'mvn test'
             }
         }
 
@@ -51,7 +51,7 @@ pipeline {
                 echo 'Packaging JAR file...'
                 echo '======================================'
 
-                bat 'mvn package -DskipTests'
+                sh 'mvn package -DskipTests'
             }
         }
 
@@ -61,7 +61,7 @@ pipeline {
                 echo 'Checking generated JAR file...'
                 echo '======================================'
 
-                bat 'dir target'
+                sh 'ls -la target'
             }
         }
 
@@ -71,7 +71,7 @@ pipeline {
                 echo 'Building Docker image...'
                 echo '======================================'
 
-                bat 'docker build -t %IMAGE_NAME% .'
+                sh "docker build -t ${IMAGE_NAME} ."
             }
         }
 
@@ -81,8 +81,8 @@ pipeline {
                 echo 'Removing old Docker container...'
                 echo '======================================'
 
-                bat 'docker stop %CONTAINER_NAME% || exit 0'
-                bat 'docker rm %CONTAINER_NAME% || exit 0'
+                sh "docker stop ${CONTAINER_NAME} || true"
+                sh "docker rm ${CONTAINER_NAME} || true"
             }
         }
 
@@ -92,7 +92,7 @@ pipeline {
                 echo 'Deploying new Docker container...'
                 echo '======================================'
 
-                bat 'docker run -d -p 8080:8080 --name %CONTAINER_NAME% %IMAGE_NAME%'
+                sh "docker run -d -p 8081:8080 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
             }
         }
 
@@ -102,7 +102,7 @@ pipeline {
                 echo 'Verifying running containers...'
                 echo '======================================'
 
-                bat 'docker ps'
+                sh 'docker ps'
             }
         }
 
