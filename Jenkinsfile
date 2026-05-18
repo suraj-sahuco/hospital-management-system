@@ -8,13 +8,21 @@ pipeline {
 
     environment {
 
+        // =========================
+        // DATABASE ENV VARIABLES
+        // =========================
+
         DB_URL = "jdbc:postgresql://aws-1-ap-south-1.pooler.supabase.com:6543/postgres"
         DB_USER = "postgres.bjioslmcldvqtmkaswmt"
         DB_PWD = "Suraj@123Pastgres"
 
+        // =========================
+        // REDIS ENV VARIABLES
+        // =========================
+
         REDIS_HOST = "capable-bluegill-126086.upstash.io"
         REDIS_PORT = "6379"
-        REDIS_PASSWORD = "gQAAAAAAAeyGAAIgcDIzNjQ2NjI2OTg3ODI0ZDQ1YTkyNDA1OTBjMzU3ZWI5Yw"
+        REDIS_PASSWORD = "gQAAAAAAAeyGAAIgcDIzQ2NjI2OTg3ODI0ZDQ1YTkyNDA1OTBjMzU3ZWI5Yw"
     }
 
     stages {
@@ -22,6 +30,10 @@ pipeline {
         stage('Checkout Code') {
 
             steps {
+
+                echo '======================================'
+                echo 'Cloning source code from GitHub...'
+                echo '======================================'
 
                 git branch: 'main',
                 url: 'https://github.com/suraj-sahuco/hospital-management-system.git'
@@ -31,6 +43,11 @@ pipeline {
         stage('Build Application') {
 
             steps {
+
+                echo '======================================'
+                echo 'Building Spring Boot application...'
+                echo '======================================'
+
                 sh 'mvn clean package -DskipTests'
             }
         }
@@ -38,13 +55,22 @@ pipeline {
         stage('Stop Old Containers') {
 
             steps {
-                sh 'docker compose down || true'
+
+                echo '======================================'
+                echo 'Stopping old containers...'
+                echo '======================================'
+
+                sh 'docker-compose down || true'
             }
         }
 
         stage('Deploy Application') {
 
             steps {
+
+                echo '======================================'
+                echo 'Building and deploying containers...'
+                echo '======================================'
 
                 sh """
                 export DB_URL=${DB_URL}
@@ -55,7 +81,7 @@ pipeline {
                 export REDIS_PORT=${REDIS_PORT}
                 export REDIS_PASSWORD=${REDIS_PASSWORD}
 
-                docker compose up -d --build
+                docker-compose up -d --build
                 """
             }
         }
@@ -63,7 +89,24 @@ pipeline {
         stage('Verify Running Containers') {
 
             steps {
+
+                echo '======================================'
+                echo 'Checking running containers...'
+                echo '======================================'
+
                 sh 'docker ps'
+            }
+        }
+
+        stage('Container Logs') {
+
+            steps {
+
+                echo '======================================'
+                echo 'Printing container logs...'
+                echo '======================================'
+
+                sh 'docker-compose logs'
             }
         }
     }
@@ -71,11 +114,26 @@ pipeline {
     post {
 
         success {
-            echo 'Deployment Successful 🚀'
+
+            echo '======================================'
+            echo 'CI/CD Pipeline Executed Successfully 🚀'
+            echo 'Application deployed successfully!'
+            echo '======================================'
         }
 
         failure {
+
+            echo '======================================'
             echo 'Pipeline Failed ❌'
+            echo 'Check Console Output for errors.'
+            echo '======================================'
+        }
+
+        always {
+
+            echo '======================================'
+            echo 'Pipeline Execution Completed.'
+            echo '======================================'
         }
     }
 }
