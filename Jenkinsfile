@@ -98,7 +98,7 @@ pipeline {
                 echo 'Stopping old containers...'
                 echo '======================================'
 
-                sh 'docker compose down || true'
+                sh 'docker-compose down || true'
             }
         }
 
@@ -119,7 +119,7 @@ pipeline {
                 export REDIS_PORT=${REDIS_PORT}
                 export REDIS_PASSWORD=${REDIS_PASSWORD}
 
-                docker compose up -d --build
+                docker-compose up -d --build
                 """
             }
         }
@@ -144,7 +144,7 @@ pipeline {
                 echo 'Printing container logs...'
                 echo '======================================'
 
-                sh 'docker compose logs'
+                sh 'docker-compose logs'
             }
         }
     }
