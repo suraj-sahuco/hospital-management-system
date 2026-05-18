@@ -9,8 +9,6 @@ pipeline {
     environment {
 
         APP_NAME = "hospital-management-system"
-        IMAGE_NAME = "hms-app"
-        CONTAINER_NAME = "hms-container"
 
         // =========================
         // DATABASE ENV VARIABLES
@@ -76,7 +74,7 @@ pipeline {
                 echo 'Packaging JAR file...'
                 echo '======================================'
 
-                sh 'mvn package -DskipTests'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
@@ -92,60 +90,46 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Stop Old Containers') {
 
             steps {
 
                 echo '======================================'
-                echo 'Building Docker image...'
+                echo 'Stopping old containers...'
                 echo '======================================'
 
-                sh "docker build -t ${IMAGE_NAME} ."
+                sh 'docker compose down || true'
             }
         }
 
-        stage('Remove Old Container') {
+        stage('Deploy Application') {
 
             steps {
 
                 echo '======================================'
-                echo 'Removing old Docker container...'
-                echo '======================================'
-
-                sh "docker stop ${CONTAINER_NAME} || true"
-                sh "docker rm ${CONTAINER_NAME} || true"
-            }
-        }
-
-        stage('Deploy Container') {
-
-            steps {
-
-                echo '======================================'
-                echo 'Deploying new Docker container...'
+                echo 'Building and deploying containers...'
                 echo '======================================'
 
                 sh """
-                docker run -d \
-                -p 8081:8080 \
-                --name ${CONTAINER_NAME} \
-                -e DB_URL='${DB_URL}' \
-                -e DB_USER='${DB_USER}' \
-                -e DB_PWD='${DB_PWD}' \
-                -e REDIS_HOST='${REDIS_HOST}' \
-                -e REDIS_PORT='${REDIS_PORT}' \
-                -e REDIS_PASSWORD='${REDIS_PASSWORD}' \
-                ${IMAGE_NAME}
+                export DB_URL=${DB_URL}
+                export DB_USER=${DB_USER}
+                export DB_PWD=${DB_PWD}
+
+                export REDIS_HOST=${REDIS_HOST}
+                export REDIS_PORT=${REDIS_PORT}
+                export REDIS_PASSWORD=${REDIS_PASSWORD}
+
+                docker compose up -d --build
                 """
             }
         }
 
-        stage('Verify Deployment') {
+        stage('Verify Running Containers') {
 
             steps {
 
                 echo '======================================'
-                echo 'Verifying running containers...'
+                echo 'Checking running containers...'
                 echo '======================================'
 
                 sh 'docker ps'
@@ -160,7 +144,7 @@ pipeline {
                 echo 'Printing container logs...'
                 echo '======================================'
 
-                sh "docker logs ${CONTAINER_NAME}"
+                sh 'docker compose logs'
             }
         }
     }

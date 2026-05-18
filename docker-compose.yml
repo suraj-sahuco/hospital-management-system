@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+
+  app:
+    build: .
+    container_name: hms-container
+
+    environment:
+      DB_URL: jdbc:postgresql://aws-1-ap-south-1.pooler.supabase.com:6543/postgres
+      DB_USER: postgres.bjioslmcldvqtmkaswmt
+      DB_PWD: Suraj@123Pastgres
+
+      REDIS_HOST: capable-bluegill-126086.upstash.io
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: gQAAAAAAAeyGAAIgcDIzNjQ2NjI2OTg3ODI0ZDQ1YTkyNDA1OTBjMzU3ZWI5Yw
+
+    expose:
+      - "8080"
+
+    restart: always
+
+    networks:
+      - hms-network
+
+
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-container
+
+    ports:
+      - "80:80"
+
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+
+    depends_on:
+      - app
+
+    restart: always
+
+    networks:
+      - hms-network
+
+
+
+networks:
+  hms-network:
